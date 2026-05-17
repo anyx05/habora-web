@@ -6,7 +6,7 @@ import { routing } from "./i18n/routing";
 // 1. Create the internationalization router
 const handleI18nRouting = createIntlMiddleware(routing);
 
-export default async function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // 2. Process locale routing first (resolves /en/, /et/ paths based on headers)
   const response = handleI18nRouting(request);
 
@@ -51,11 +51,11 @@ export default async function proxy(request: NextRequest) {
       .from('users')
       .select('role')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
     
     if (profile?.role !== 'port_operator') {
       const url = request.nextUrl.clone();
-      url.pathname = "/auth/wrong-account";
+      url.pathname = "/";
       return NextResponse.redirect(url);
     }
   }

@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { createClient } from "@/lib/supabase/client"
 import { Link } from "@/i18n/routing"
 import { Anchor, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -17,7 +18,22 @@ import {
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
+  const [userRole, setUserRole] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const t = useTranslations("Header")
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).maybeSingle()
+        setUserRole(profile?.role || null)
+      }
+      setIsLoading(false)
+    }
+    fetchUser()
+  }, [])
 
   const navLinks = [
     { label: t("services"), href: "#services" },
@@ -54,19 +70,41 @@ export function Header() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-2">
             <LanguageSwitcher />
-            <Button
-              variant="ghost"
-              asChild
-              className="text-muted-foreground hover:text-foreground hover:bg-navy/5 transition-all duration-300 ease-out"
-            >
-              <Link href="/login">{t("signIn")}</Link>
-            </Button>
-            <Button
-              asChild
-              className="bg-navy hover:bg-navy-light text-white shadow-md shadow-navy/20 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-navy/30 focus-visible:ring-2 focus-visible:ring-amber/50 focus-visible:ring-offset-2"
-            >
-              <Link href="/dashboard">{t("dashboard")}</Link>
-            </Button>
+            {!isLoading && (
+              <>
+                {userRole === 'port_operator' ? (
+                  <Button
+                    asChild
+                    className="bg-navy hover:bg-navy-light text-white shadow-md shadow-navy/20 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-navy/30 focus-visible:ring-2 focus-visible:ring-amber/50 focus-visible:ring-offset-2"
+                  >
+                    <Link href="/dashboard">{t("dashboard")}</Link>
+                  </Button>
+                ) : userRole === 'vessel_operator' ? (
+                  <Button
+                    asChild
+                    className="bg-navy hover:bg-navy-light text-white shadow-md shadow-navy/20 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-navy/30 focus-visible:ring-2 focus-visible:ring-amber/50 focus-visible:ring-offset-2"
+                  >
+                    <Link href="/bookings">My Bookings</Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      asChild
+                      className="text-muted-foreground hover:text-foreground hover:bg-navy/5 transition-all duration-300 ease-out"
+                    >
+                      <Link href="/login">{t("signIn")}</Link>
+                    </Button>
+                    <Button
+                      asChild
+                      className="bg-navy hover:bg-navy-light text-white shadow-md shadow-navy/20 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-navy/30 focus-visible:ring-2 focus-visible:ring-amber/50 focus-visible:ring-offset-2"
+                    >
+                      <Link href="/signup?role=port_operator">List your property</Link>
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Trigger */}
@@ -111,21 +149,45 @@ export function Header() {
                 ))}
               </nav>
               <div className="flex flex-col gap-3 pt-6 border-t border-border/50">
-                <Button
-                  variant="outline"
-                  asChild
-                  className="w-full justify-center border-border/50 hover:bg-navy/5 transition-all duration-300 ease-out"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Link href="/login">{t("signIn")}</Link>
-                </Button>
-                <Button
-                  asChild
-                  className="w-full justify-center bg-navy hover:bg-navy-light text-white shadow-md shadow-navy/20 transition-all duration-300 ease-out"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Link href="/dashboard">{t("dashboard")}</Link>
-                </Button>
+                {!isLoading && (
+                  <>
+                    {userRole === 'port_operator' ? (
+                      <Button
+                        asChild
+                        className="w-full justify-center bg-navy hover:bg-navy-light text-white shadow-md shadow-navy/20 transition-all duration-300 ease-out"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link href="/dashboard">{t("dashboard")}</Link>
+                      </Button>
+                    ) : userRole === 'vessel_operator' ? (
+                      <Button
+                        asChild
+                        className="w-full justify-center bg-navy hover:bg-navy-light text-white shadow-md shadow-navy/20 transition-all duration-300 ease-out"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link href="/bookings">My Bookings</Link>
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          variant="outline"
+                          asChild
+                          className="w-full justify-center border-border/50 hover:bg-navy/5 transition-all duration-300 ease-out"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <Link href="/login">{t("signIn")}</Link>
+                        </Button>
+                        <Button
+                          asChild
+                          className="w-full justify-center bg-navy hover:bg-navy-light text-white shadow-md shadow-navy/20 transition-all duration-300 ease-out"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <Link href="/signup?role=port_operator">List your property</Link>
+                        </Button>
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             </SheetContent>
           </Sheet>

@@ -2,7 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   haboraApi, 
   CreateItineraryRequest, 
-  AddBookingToItineraryRequest 
+  AddBookingToItineraryRequest,
+  HaboraApiError
 } from '../api/habora-client';
 
 export const itineraryKeys = {
@@ -14,17 +15,55 @@ export const itineraryKeys = {
 export function useCurrentItinerary() {
   return useQuery({
     queryKey: itineraryKeys.current(),
-    queryFn: () => haboraApi.getCurrentItinerary(),
+    queryFn: async () => {
+      try {
+        return await haboraApi.getCurrentItinerary();
+      } catch (e) {
+        if (e instanceof HaboraApiError && e.status === 404) {
+          return null;
+        }
+        throw e;
+      }
+    },
     staleTime: 1000 * 30, // 30s
+    retry: (failureCount, error) => {
+      if (error instanceof HaboraApiError && error.status === 404) {
+        return false;
+      }
+      if (error instanceof HaboraApiError && error.status === 401) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+    refetchOnWindowFocus: false,
   });
 }
 
 export function useItineraryDetail(id: string | undefined) {
   return useQuery({
     queryKey: itineraryKeys.detail(id!),
-    queryFn: () => haboraApi.getItinerary(id!),
+    queryFn: async () => {
+      try {
+        return await haboraApi.getItinerary(id!);
+      } catch (e) {
+        if (e instanceof HaboraApiError && e.status === 404) {
+          return null;
+        }
+        throw e;
+      }
+    },
     enabled: !!id,
     staleTime: 1000 * 30, // 30s
+    retry: (failureCount, error) => {
+      if (error instanceof HaboraApiError && error.status === 404) {
+        return false;
+      }
+      if (error instanceof HaboraApiError && error.status === 401) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+    refetchOnWindowFocus: false,
   });
 }
 

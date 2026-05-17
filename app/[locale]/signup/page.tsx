@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useRouter } from "@/i18n/routing"
 import { Anchor, ArrowLeft, Eye, EyeOff, UserPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -33,6 +33,17 @@ export default function SignUpPage() {
     })
   }
 
+  const [isMarinaOperator, setIsMarinaOperator] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get("role") === "port_operator") {
+        setIsMarinaOperator(true)
+      }
+    }
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -46,6 +57,8 @@ export default function SignUpPage() {
     setFieldErrors({})
     setIsLoading(true)
 
+    const role = isMarinaOperator ? 'port_operator' : 'vessel_operator'
+
     const supabase = createClient()
     const { error } = await supabase.auth.signUp({
       email: email.trim(),
@@ -54,7 +67,7 @@ export default function SignUpPage() {
         emailRedirectTo: `${window.location.origin}/api/auth/callback`,
         data: {
           full_name: name.trim(),
-          role: 'port_operator',
+          role,
         },
       },
     })
@@ -198,6 +211,19 @@ export default function SignUpPage() {
                   />
                   <FormError message={fieldErrors.confirmPassword} />
                 </Field>
+
+                <div className="flex items-center gap-2 mt-2">
+                  <input
+                    type="checkbox"
+                    id="marinaOperator"
+                    checked={isMarinaOperator}
+                    onChange={(e) => setIsMarinaOperator(e.target.checked)}
+                    className="w-4 h-4 rounded border-white/20 bg-white/5 text-cyan focus:ring-cyan/30"
+                  />
+                  <label htmlFor="marinaOperator" className="text-white/70 text-sm">
+                    I'm a marina operator listing my port
+                  </label>
+                </div>
               </FieldGroup>
 
               {/* Submit */}

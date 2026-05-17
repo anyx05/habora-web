@@ -68,7 +68,7 @@ export function DashboardHeader({ sidebarCollapsed, onMenuClick }: DashboardHead
         {/* Current Date/Time */}
         <div className="hidden md:flex items-center gap-3 pl-3 border-l border-border/50">
           <div className="text-right">
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-sm font-medium text-foreground" suppressHydrationWarning>
               {new Date().toLocaleDateString(locale === "et" ? "et-EE" : "en-EE", { 
                 weekday: "short", 
                 month: "short", 

@@ -59,18 +59,24 @@ export default function LoginPage() {
           .from('users')
           .select('role')
           .eq('id', user.id)
-          .single()
+          .maybeSingle()
         
-        if (profile?.role !== 'port_operator') {
+        const role = profile?.role
+        
+        if (role === 'port_operator') {
+          toast.success(t("success"))
+          window.location.href = `/${locale}/dashboard`
+        } else if (role === 'vessel_operator') {
+          toast.success(t("success"))
+          const returnTo = new URLSearchParams(window.location.search).get('returnTo') || `/${locale}`
+          window.location.href = returnTo
+        } else {
           await supabase.auth.signOut()
-          toast.error(t("wrongAccount"))
+          toast.error("Account configuration issue. Please contact support.")
           setIsLoading(false)
           return
         }
       }
-
-      toast.success(t("success"))
-      window.location.href = `/${locale}/dashboard`
     }
   }
 
