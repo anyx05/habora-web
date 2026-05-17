@@ -4,9 +4,14 @@ import { useState, useRef, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { MessageCircle, X, Send, Anchor, User, Sparkles } from "lucide-react"
+import { MessageCircle, X, Send, Anchor, User, Sparkles, LogIn } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslations, useLocale } from "next-intl"
+import { createClient } from "@/lib/supabase/client"
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js"
+import { Link } from "@/i18n/routing"
+import { useQueryClient } from "@tanstack/react-query"
+import { itineraryKeys } from "@/lib/queries/itineraries"
 
 interface ChatWidgetProps {
   isOpen: boolean
@@ -16,6 +21,7 @@ interface ChatWidgetProps {
 export function ChatWidget({ isOpen, onToggle }: ChatWidgetProps) {
   const t = useTranslations("ChatWidget")
   const locale = useLocale()
+  const queryClient = useQueryClient()
   
   // Generate a unique session ID per chat session (not shared across all users)
   const sessionId = useMemo(() => `guest-${crypto.randomUUID()}`, [])
@@ -29,7 +35,28 @@ export function ChatWidget({ isOpen, onToggle }: ChatWidgetProps) {
     }
   ])
   const [isTyping, setIsTyping] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [accessToken, setAccessToken] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // ── Auth state ─────────────────────────────────────────────────
+  useEffect(() => {
+    const supabase = createClient()
+    
+    const initAuth = async () => {
+      const { data } = await supabase.auth.getSession()
+      setIsAuthenticated(!!data.session)
+      setAccessToken(data.session?.access_token ?? null)
+    }
+    initAuth()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
+      setIsAuthenticated(!!session)
+      setAccessToken(session?.access_token ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -66,13 +93,19 @@ export function ChatWidget({ isOpen, onToggle }: ChatWidgetProps) {
       if (!supabaseUrl || !publishableKey) {
         throw new Error('Missing configuration')
       }
+
+      // Build headers — always include apikey, include Authorization if authenticated
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "apikey": publishableKey,
+      }
+      if (accessToken) {
+        headers["Authorization"] = `Bearer ${accessToken}`
+      }
       
       const res = await fetch(`${supabaseUrl}/functions/v1/chat-handler`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": publishableKey
-        },
+        headers,
         body: JSON.stringify({
           messages: [...messages, userMsg].map((m: any) => ({ role: m.role, content: m.content })),
           sessionId: sessionId,
@@ -93,6 +126,18 @@ export function ChatWidget({ isOpen, onToggle }: ChatWidgetProps) {
           }
         ])
         return
+      }
+
+      // Check if the response indicates a trip was updated (add_to_trip succeeded)
+      const responseText: string = data.text || ''
+      const tripWasUpdated = responseText.toLowerCase().includes('added') && 
+                             (responseText.toLowerCase().includes('trip') || responseText.toLowerCase().includes('reis'))
+
+      if (tripWasUpdated) {
+        // Invalidate itinerary queries so TripDrawer picks up the new booking
+        queryClient.invalidateQueries({ queryKey: itineraryKeys.current() })
+        // Fire custom event for TripDrawer to open
+        window.dispatchEvent(new CustomEvent("trip-updated"))
       }
       
       setMessages(prev => [
@@ -211,6 +256,23 @@ export function ChatWidget({ isOpen, onToggle }: ChatWidgetProps) {
                   <X className="w-4 h-4" />
                 </button>
               </div>
+
+              {/* Auth CTA Banner — only for unauthenticated users */}
+              {!isAuthenticated && (
+                <div className="flex items-center gap-2 px-4 py-2.5 bg-amber/10 border-b border-amber/20">
+                  <LogIn className="w-3.5 h-3.5 text-amber shrink-0" />
+                  <p className="text-xs text-amber/90 flex-1">
+                    {t("signInCta")}
+                  </p>
+                  <Button
+                    asChild
+                    size="sm"
+                    className="h-7 px-3 text-xs bg-amber hover:bg-amber/90 text-navy font-medium"
+                  >
+                    <Link href="/login">{t("signInBtn")}</Link>
+                  </Button>
+                </div>
+              )}
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-white/10">

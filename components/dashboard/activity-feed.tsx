@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Ship, Calendar, CheckCircle2, AlertCircle, Anchor, XCircle } from "lucide-react"
+import { Ship, Calendar, CheckCircle2, Anchor, XCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useBookings } from "@/lib/queries/bookings"
 import { formatDistanceToNow } from "date-fns"

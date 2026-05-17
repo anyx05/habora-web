@@ -9,7 +9,6 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { FormError } from "@/components/ui/form-error"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher"
 import { useTranslations, useLocale } from "next-intl"
 import { validateLoginForm } from "@/lib/validations"
 

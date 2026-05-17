@@ -20,7 +20,7 @@
   },
   "HowItWorks": {
     "title": "Kuidas See Töötab",
-    "subtitle": "Oleme eemaldanud traditsioonilised broneerimiskalendrid. SadamaAgent on autonoomne AI süsteem, mis on ühendatud otse andmebaasiga.",
+    "subtitle": "Oleme eemaldanud traditsioonilised broneerimiskalendrid. Habora on autonoomne AI süsteem, mis on ühendatud otse andmebaasiga.",
     "step1": "Jäta Vormid Vahele",
     "step1Desc": "Ära raiska aega lõputute kalendrite ja vormide peale. Sinu aeg on väärtuslik.",
     "step2": "Räägi Agendiga",
@@ -65,7 +65,9 @@
     "status": "Aktiivne - AI Puhverdatud",
     "placeholder": "Kirjuta oma sõnum...",
     "disclaimer": "Toetab AI - Vastused võivad erineda",
-    "welcome": "Tere tulemast SadamaAgenti! Olen sinu AI sadamaassistent, kes on otseühenduses reaalajas andmebaasiga. Kuidas saan täna kaikohta broneerida aidata?"
+    "welcome": "Tere tulemast Haborai! Olen sinu AI sadamaassistent, kes on otseühenduses reaalajas andmebaasiga. Kuidas saan täna kaikohta broneerida aidata?",
+    "signInCta": "Logi sisse, et alustada reisi",
+    "signInBtn": "Logi Sisse"
   },
   "Auth": {
     "back": "Tagasi Avalehele",
@@ -330,5 +332,22 @@
     "mobileAppDesc": "Laadi alla Habora oma laeva ja broneeringute haldamiseks.",
     "signInDifferent": "Logi sisse teise kontoga",
     "backToSignIn": "Tagasi sisselogimisse"
+  },
+  "Trip": {
+    "drawerTitle": "Sinu reis",
+    "empty": "Sinu reis on tühi. Vestle assistendiga, et lisada peatusi.",
+    "confirm": "Kinnita reis",
+    "cancel": "Tühista reis",
+    "totalLabel": "Kokku",
+    "confirmSuccess": "Reis kinnitatud! {count} broneeringut loodud.",
+    "confirmConflict": "Üks kaikoht broneeriti just teise inimese poolt. Palun eemalda see ja proovi uuesti.",
+    "cancelDialogTitle": "Tühista see reis?",
+    "cancelDialogMessage": "Kõik ootel broneeringud eemaldatakse.",
+    "cancelConfirm": "Jah, tühista",
+    "cancelKeep": "Säilita reis",
+    "openTrip": "Sinu reis",
+    "nights": "{count} {count, plural, one {öö} other {ööd}}",
+    "removeItem": "Eemalda",
+    "perNight": "/öö"
   }
 }

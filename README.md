@@ -1,8 +1,8 @@
-# SadamaAgent
+# Habora
 
 > AI-powered maritime berth reservation platform for Estonian ports and marinas.
 
-SadamaAgent is a full-stack Next.js 16 application that enables boat owners to discover available marinas, check berth availability, and complete bookings through a natural-language AI chatbot — all from a public-facing landing page. Port managers access a dedicated dashboard to manage their berths, bookings, and AI agent settings.
+Habora is a full-stack Next.js 16 application that enables boat owners to discover available marinas, check berth availability, and complete bookings through a natural-language AI chatbot — all from a public-facing landing page. Port managers access a dedicated dashboard to manage their berths, bookings, and AI agent settings.
 
 ---
 
@@ -309,7 +309,7 @@ npm run test:report
 
 ## Deployment
 
-The application is deployed on **Vercel** (live at `sadamaagent.vercel.app`).
+The application is deployed on **Vercel** (live at `habora.vercel.app`).
 
 Deployments are triggered automatically on push to the main branch.
 

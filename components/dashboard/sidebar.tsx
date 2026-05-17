@@ -6,13 +6,13 @@ import {
   Anchor, 
   Ship, 
   Calendar, 
-  Settings, 
   LogOut, 
   ChevronLeft,
   LayoutDashboard,
   User,
   X,
-  Loader2
+  Loader2,
+  BarChart
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -141,9 +141,9 @@ function SidebarContent({
       icon: Calendar,
     },
     {
-      label: t("settings"),
-      href: "/dashboard/settings",
-      icon: Settings,
+      label: "Analytics",
+      href: "/dashboard/analytics",
+      icon: BarChart,
     },
   ]
 
@@ -162,7 +162,7 @@ function SidebarContent({
             "font-semibold text-lg tracking-tight whitespace-nowrap transition-opacity duration-300",
             collapsed ? "opacity-0 w-0" : "opacity-100"
           )}>
-            SadamaAgent
+            Habora
           </span>
         </Link>
       </div>
@@ -237,7 +237,6 @@ function SidebarContent({
           label={t("signOut")}
           signingOutLabel={t("signingOut")}
           signOutSuccessLabel={t("signOutSuccess")}
-          signOutErrorLabel={t("signOutError")}
         />
 
         {/* Collapse Toggle - Desktop Only */}
@@ -268,7 +267,7 @@ function SidebarContent({
   )
 }
 
-function SignOutButton({ collapsed, onNavigate, label, signingOutLabel, signOutSuccessLabel, signOutErrorLabel }: { collapsed: boolean; onNavigate?: () => void; label: string; signingOutLabel: string; signOutSuccessLabel: string; signOutErrorLabel: string }) {
+function SignOutButton({ collapsed, onNavigate, label, signingOutLabel, signOutSuccessLabel }: { collapsed: boolean; onNavigate?: () => void; label: string; signingOutLabel: string; signOutSuccessLabel: string }) {
   const [isSigningOut, setIsSigningOut] = useState(false)
   const router = useRouter()
 

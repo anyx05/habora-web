@@ -1,6 +1,6 @@
-# SadamaAgent — AI Chatbot Design Document
+# Habora — AI Chatbot Design Document
 
-> This document describes the complete design, tooling, business logic, and guardrails for the SadamaAgent AI chatbot. Read this before modifying any chatbot behaviour.
+> This document describes the complete design, tooling, business logic, and guardrails for the Habora AI chatbot. Read this before modifying any chatbot behaviour.
 
 ---
 

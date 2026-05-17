@@ -3,7 +3,7 @@
     "badge": "Estonia's Premier Marina Platform",
     "title": "Find Your Perfect",
     "titleHighlight": "Berth or Marina Slip",
-    "description": "Whether you own a sailboat, yacht, or commercial vessel, discover and book premium berths across Estonian harbours with real-time availability and instant confirmation.",
+    "description": "From Tallinn to Bora Bora — port booking and management made easy",
     "chatBtn": "Chat with Marina Assistant",
     "browseBtn": "Browse Available Berths",
     "statsSupport": "Support",
@@ -20,7 +20,7 @@
   },
   "HowItWorks": {
     "title": "How It Works",
-    "subtitle": "We ripped out the traditional booking calendars. SadamaAgent is a fully autonomous AI system wired directly into the national marina database.",
+    "subtitle": "We ripped out the traditional booking calendars. Habora is a fully autonomous AI system wired directly into the national marina database.",
     "step1": "Skip the Forms",
     "step1Desc": "Don't bother clicking through endless calendars or filling out forms. Your time is valuable.",
     "step2": "Tell the Agent",
@@ -43,7 +43,7 @@
     "error": "Error fetching berths:"
   },
   "FooterNav": {
-    "desc": "Estonia's premier marina and harbour booking platform for boat owners, yachts, and commercial vessels.",
+    "desc": "From Tallinn to Bora Bora — port booking and management made easy",
     "servicesTitle": "Services",
     "marinaBerths": "Marina Berths",
     "yachtMoorings": "Yacht Moorings",
@@ -65,7 +65,9 @@
     "status": "Online - AI Powered",
     "placeholder": "Type your message...",
     "disclaimer": "Powered by AI - Responses may vary",
-    "welcome": "Welcome to SadamaAgent! I am your AI marina assistant connected to live port availability. How can I help you book a berth today?"
+    "welcome": "Welcome to Habora! I am your AI marina assistant connected to live port availability. How can I help you book a berth today?",
+    "signInCta": "Sign in to start a trip",
+    "signInBtn": "Sign In"
   },
   "Auth": {
     "back": "Back to Home",
@@ -330,5 +332,22 @@
     "mobileAppDesc": "Download Habora to manage your vessel and bookings.",
     "signInDifferent": "Sign in with a different account",
     "backToSignIn": "Back to sign in"
+  },
+  "Trip": {
+    "drawerTitle": "Your Trip",
+    "empty": "Your trip is empty. Chat with the assistant to add stops.",
+    "confirm": "Confirm trip",
+    "cancel": "Cancel trip",
+    "totalLabel": "Total",
+    "confirmSuccess": "Trip confirmed! {count} bookings created.",
+    "confirmConflict": "One of your berths was just booked. Please remove the conflicting item and try again.",
+    "cancelDialogTitle": "Cancel this trip?",
+    "cancelDialogMessage": "All pending bookings will be removed.",
+    "cancelConfirm": "Yes, cancel",
+    "cancelKeep": "Keep trip",
+    "openTrip": "Your trip",
+    "nights": "{count} {count, plural, one {night} other {nights}}",
+    "removeItem": "Remove",
+    "perNight": "/night"
   }
 }

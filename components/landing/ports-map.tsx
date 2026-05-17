@@ -1,9 +1,7 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
-import { MapContainer, TileLayer, useMap, ZoomControl } from "react-leaflet"
-import L from "leaflet"
-import "leaflet/dist/leaflet.css"
+import { useMemo, useRef } from "react"
+import Map, { NavigationControl, MapRef } from "react-map-gl/mapbox"
 import { PortMarker } from "./port-marker"
 import { Navigation } from "lucide-react"
 
@@ -19,56 +17,15 @@ interface PortsMapProps {
   ports: MapPort[]
 }
 
-// Estonia & Baltic coast — good default view
-const ESTONIA_CENTER: [number, number] = [59.05, 24.7]
-const DEFAULT_ZOOM = 8
-const MIN_ZOOM = 2   // allow zooming out to global level
+const ESTONIA_CENTER = { longitude: 24.7, latitude: 59.05 }
+const DEFAULT_ZOOM = 7
+const MIN_ZOOM = 2
 const MAX_ZOOM = 16
 
-function FitBounds({ coords }: { coords: [number, number][] }) {
-  const map = useMap()
-  useEffect(() => {
-    if (coords.length === 0) return
-    if (coords.length === 1) {
-      map.setView(coords[0], 11, { animate: false })
-      return
-    }
-    const bounds = L.latLngBounds(coords)
-    map.fitBounds(bounds, { padding: [80, 80], maxZoom: 11, animate: false })
-  }, [coords, map])
-  return null
-}
-
-function RecenterControl({ coords }: { coords: [number, number][] }) {
-  const map = useMap()
-  return (
-    <div className="leaflet-top leaflet-right" style={{ marginTop: '10px', marginRight: '10px' }}>
-      <div className="leaflet-control leaflet-control-zoom leaflet-bar">
-        <a 
-          href="#"
-          role="button"
-          onClick={(e) => {
-            e.preventDefault()
-            if (coords.length > 1) {
-               const bounds = L.latLngBounds(coords)
-               map.fitBounds(bounds, { padding: [80, 80], maxZoom: 11 })
-            } else if (coords.length === 1) {
-               map.setView(coords[0], 11)
-            } else {
-               map.setView(ESTONIA_CENTER, DEFAULT_ZOOM)
-            }
-          }}
-          title="Recenter to ports"
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Navigation className="w-4 h-4" />
-        </a>
-      </div>
-    </div>
-  )
-}
-
 export default function PortsMap({ ports }: PortsMapProps) {
+  const mapRef = useRef<MapRef>(null)
+  
+  // Calculate bounding box to fit all ports on mount/recenter
   const validPorts = useMemo(() => {
     return ports
       .filter((p) => p.coordinates)
@@ -77,66 +34,72 @@ export default function PortsMap({ ports }: PortsMapProps) {
         const lat = parseFloat(latStr)
         const lng = parseFloat(lngStr)
         if (isNaN(lat) || isNaN(lng)) return null
-        return { ...p, coords: [lat, lng] as [number, number] }
+        return { ...p, coords: [lng, lat] as [number, number] } // Mapbox is [lng, lat]
       })
       .filter(Boolean) as (MapPort & { coords: [number, number] })[]
   }, [ports])
 
-  const allCoords = useMemo(() => validPorts.map((p) => p.coords), [validPorts])
+  const bounds = useMemo(() => {
+    if (validPorts.length === 0) return null
+    const lngs = validPorts.map(p => p.coords[0])
+    const lats = validPorts.map(p => p.coords[1])
+    return [
+      [Math.min(...lngs) - 0.5, Math.min(...lats) - 0.5], // SW
+      [Math.max(...lngs) + 0.5, Math.max(...lats) + 0.5]  // NE
+    ] as [[number, number], [number, number]]
+  }, [validPorts])
+
+  const handleRecenter = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (bounds && mapRef.current) {
+      mapRef.current.fitBounds(bounds, { padding: 80, duration: 1000 })
+    } else if (mapRef.current) {
+      mapRef.current.flyTo({ center: [ESTONIA_CENTER.longitude, ESTONIA_CENTER.latitude], zoom: DEFAULT_ZOOM })
+    }
+  }
 
   return (
-    <MapContainer
-      center={ESTONIA_CENTER}
-      zoom={DEFAULT_ZOOM}
-      minZoom={MIN_ZOOM}
-      maxZoom={MAX_ZOOM}
-      scrollWheelZoom={false}
-      zoomControl={false}
-      doubleClickZoom={true}
-      className="w-full h-full"
-    >
-      {/*
-        CartoDB — Dark Matter
-        Deep navy/black theme that matches the brand palette. 
-        Free to use without an API key.
-      */}
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+    <div className="w-full h-full relative">
+      <Map
+        ref={mapRef}
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+        initialViewState={{
+          longitude: ESTONIA_CENTER.longitude,
+          latitude: ESTONIA_CENTER.latitude,
+          zoom: DEFAULT_ZOOM
+        }}
+        minZoom={MIN_ZOOM}
         maxZoom={MAX_ZOOM}
-      />
+        mapStyle="mapbox://styles/mapbox/dark-v11"
+        renderWorldCopies={true}
+        onLoad={() => {
+          if (bounds && mapRef.current) {
+            mapRef.current.fitBounds(bounds, { padding: 80, duration: 0 })
+          }
+        }}
+      >
+        <NavigationControl position="bottom-right" showCompass={false} />
 
-      <ZoomControl position="bottomright" />
-      <RecenterControl coords={allCoords} />
+        {validPorts.map((port) => (
+          <PortMarker
+            key={port.id}
+            name={port.name}
+            description={port.description}
+            longitude={port.coords[0]}
+            latitude={port.coords[1]}
+            totalBerths={port.berths?.length || 0}
+          />
+        ))}
+      </Map>
 
-      <FitBounds coords={allCoords} />
-
-      {validPorts.flatMap((port) => [
-        <PortMarker
-          key={`${port.id}-prev`}
-          id={port.id}
-          name={port.name}
-          description={port.description}
-          coordinates={[port.coords[0], port.coords[1] - 360]}
-          totalBerths={port.berths?.length || 0}
-        />,
-        <PortMarker
-          key={port.id}
-          id={port.id}
-          name={port.name}
-          description={port.description}
-          coordinates={port.coords}
-          totalBerths={port.berths?.length || 0}
-        />,
-        <PortMarker
-          key={`${port.id}-next`}
-          id={port.id}
-          name={port.name}
-          description={port.description}
-          coordinates={[port.coords[0], port.coords[1] + 360]}
-          totalBerths={port.berths?.length || 0}
-        />,
-      ])}
-    </MapContainer>
+      {/* Recenter Tool */}
+      <button
+        onClick={handleRecenter}
+        className="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center bg-[#111d2e]/90 text-white border border-white/10 rounded-lg backdrop-blur shadow-md hover:bg-[#1e293b] transition-colors"
+        title="Recenter to ports"
+      >
+        <Navigation className="w-4 h-4" />
+      </button>
+    </div>
   )
 }

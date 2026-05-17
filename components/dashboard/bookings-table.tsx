@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Ship, MoreHorizontal, Calendar, MapPin } from "lucide-react"
+import { Ship, Calendar } from "lucide-react"
 import { useBookings } from "@/lib/queries/bookings"
 import { format } from "date-fns"
 import { useTranslations } from "next-intl"

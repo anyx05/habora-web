@@ -5,6 +5,9 @@ import { useTranslations } from "next-intl"
 export function Footer() {
   const t = useTranslations("FooterNav")
 
+  const vesselIconClass =
+    "flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20"
+
   const footerLinks = {
     services: [
       { label: t("marinaBerths"), href: "#berths" },
@@ -13,9 +16,9 @@ export function Footer() {
     ],
     company: [
       { label: t("aboutUs"), href: "#about" },
-      { label: t("contact"), href: "mailto:hello@sadamaagent.ee" },
-      { label: t("careers"), href: "mailto:careers@sadamaagent.ee" },
-      { label: t("press"), href: "mailto:press@sadamaagent.ee" },
+      { label: t("contact"), href: "mailto:hello@habora.ee" },
+      { label: t("careers"), href: "mailto:careers@habora.ee" },
+      { label: t("press"), href: "mailto:press@habora.ee" },
     ],
     legal: [
       { label: t("privacy"), href: "#" },
@@ -41,7 +44,7 @@ export function Footer() {
                 <Anchor className="w-4 h-4" />
               </div>
               <span className="font-semibold text-lg tracking-tight">
-                SadamaAgent
+                Habora
               </span>
             </Link>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs">
@@ -49,13 +52,13 @@ export function Footer() {
             </p>
             {/* Vessel type icons */}
             <div className="flex items-center gap-3 mt-5">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20">
+              <div className={vesselIconClass}>
                 <Sailboat className="w-4 h-4 text-white/50" />
               </div>
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20">
+              <div className={vesselIconClass}>
                 <Ship className="w-4 h-4 text-white/50" />
               </div>
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20">
+              <div className={vesselIconClass}>
                 <Waves className="w-4 h-4 text-white/50" />
               </div>
             </div>
@@ -123,7 +126,7 @@ export function Footer() {
         <div className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-white/10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs sm:text-sm text-white/40">
-              &copy; {new Date().getFullYear()} SadamaAgent. {t("rights")}
+              &copy; {new Date().getFullYear()} Habora. {t("rights")}
             </p>
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/50">

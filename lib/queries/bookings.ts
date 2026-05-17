@@ -96,3 +96,62 @@ export function useUpdateBookingStatus() {
     }
   });
 }
+
+function mapBookingError(code: string | undefined, message: string): string {
+  switch (code) {
+    case 'P0001':
+      return 'This berth is no longer available. Please ask the customer to choose another.';
+    case 'P0002':
+      return 'The vessel is too long for this berth. Please find a larger berth.';
+    case 'P0003':
+      return 'The vessel\'s draft exceeds this berth\'s depth. Please find a deeper berth.';
+    case 'P0004':
+      return 'This berth was just booked by someone else. Please offer different dates or another berth.';
+    default:
+      return `Booking failed: ${message}`;
+  }
+}
+
+export interface CreateBookingInput {
+  berth_id: string;
+  customer_name: string;
+  customer_email: string;
+  vessel_name: string;
+  vessel_length_m: number;
+  vessel_draft_m?: number | null;
+  arrival_date: string;
+  departure_date: string;
+  notes?: string | null;
+}
+
+export function useCreateBooking() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: CreateBookingInput) => {
+      const supabase = createClient();
+      const { data, error } = await supabase.rpc('create_booking_safely', {
+        p_berth_id: input.berth_id,
+        p_customer_name: input.customer_name,
+        p_customer_email: input.customer_email,
+        p_vessel_name: input.vessel_name,
+        p_vessel_length_m: input.vessel_length_m,
+        p_vessel_draft_m: input.vessel_draft_m ?? null,
+        p_arrival_date: input.arrival_date,
+        p_departure_date: input.departure_date,
+        p_notes: input.notes ?? null,
+      });
+
+      if (error) {
+        const err = new Error(mapBookingError(error.code, error.message));
+        (err as any).code = error.code;
+        throw err;
+      }
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+    },
+  });
+}

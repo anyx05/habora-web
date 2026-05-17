@@ -34,7 +34,7 @@ export function Header() {
               <Anchor className="w-4 h-4" />
             </div>
             <span className="font-semibold text-lg tracking-tight text-foreground">
-              SadamaAgent
+              Habora
             </span>
           </Link>
 
@@ -91,7 +91,7 @@ export function Header() {
                     <Anchor className="w-4 h-4" />
                   </div>
                   <span className="font-semibold text-lg tracking-tight">
-                    SadamaAgent
+                    Habora
                   </span>
                 </SheetTitle>
                 <SheetDescription className="sr-only">

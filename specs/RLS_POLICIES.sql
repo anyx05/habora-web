@@ -1,5 +1,5 @@
 -- ╔══════════════════════════════════════════════════════════════════╗
--- ║  SadamaAgent — Revised RLS Policies                           ║
+-- ║  Habora — Revised RLS Policies                           ║
 -- ║  Chatbot Service Account: d50a1af2-084d-42cd-a8e5-b6e73342504a║
 -- ╚══════════════════════════════════════════════════════════════════╝
 

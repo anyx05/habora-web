@@ -1,4 +1,4 @@
-# SadamaAgent — Canonical Database Schema
+# Habora — Canonical Database Schema
 
 ## Overview
 

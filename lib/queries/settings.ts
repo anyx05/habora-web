@@ -25,7 +25,7 @@ export function useAgentSettings() {
         if (error.code === 'PGRST116') {
           // If no settings exist yet, return defaults
           return {
-            systemPrompt: "You are SadamaAgent...",
+            systemPrompt: "You are Habora...",
             language: "en"
           } as AgentSettings;
         }

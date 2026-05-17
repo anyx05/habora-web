@@ -1,6 +1,5 @@
 "use client"
 
-import { Link } from "@/i18n/routing"
 import { AlertCircle, ArrowLeft, LogOut, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"

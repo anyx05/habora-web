@@ -7,6 +7,45 @@ import { ActivityFeed } from "@/components/dashboard/activity-feed"
 import { useDashboardStats } from "@/lib/queries/stats"
 import { useTranslations } from "next-intl"
 
+// import {
+//   useCurrentItinerary,
+//   useCreateItinerary,
+// } from '@/lib/queries/itineraries';
+
+// export default function DashboardPage() {
+//   const { data, error, isLoading } = useCurrentItinerary();
+
+//   const create = useCreateItinerary();
+
+//   return (
+//     <div>
+//       Dashboard
+
+//       <pre
+//         style={{
+//           position: 'fixed',
+//           bottom: 0,
+//           right: 0,
+//           background: 'black',
+//           color: 'lime',
+//           padding: 10,
+//           fontSize: 11,
+//         }}
+//       >
+//         loading: {String(isLoading)}
+//         {'\n'}
+//         data: {JSON.stringify(data, null, 2)}
+//         {'\n'}
+//         error: {error?.message || 'none'}
+//       </pre>
+
+//       <button onClick={() => create.mutate({ name: 'Smoke test trip' })}>
+//         Create itinerary
+//       </button>
+//     </div>
+//   );
+// }
+
 export default function DashboardPage() {
   const { data: stats, isLoading } = useDashboardStats()
   const t = useTranslations("DashboardHome")

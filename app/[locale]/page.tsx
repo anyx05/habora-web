@@ -7,6 +7,7 @@ import { FeaturedPorts } from "@/components/landing/featured-ports"
 import { HowItWorks } from "@/components/landing/how-it-works"
 import { Footer } from "@/components/landing/footer"
 import { ChatWidget } from "@/components/landing/chat-widget"
+import { TripDrawer } from "@/components/landing/TripDrawer"
 
 export default function HomePage() {
   const [isChatOpen, setIsChatOpen] = useState(false)
@@ -28,6 +29,7 @@ export default function HomePage() {
         isOpen={isChatOpen} 
         onToggle={() => setIsChatOpen(!isChatOpen)} 
       />
+      <TripDrawer />
     </main>
   )
 }

@@ -1,4 +1,4 @@
-# SadamaAgent — Test Strategy
+# Habora — Test Strategy
 
 > **Audience:** QA Engineers, developers writing tests, and AI agents extending test coverage.  
 > Read `specs/ARCHITECTURE.md` first for system context.
@@ -7,7 +7,7 @@
 
 ## 1. Business Model & Test Scope
 
-SadamaAgent has two user journeys:
+Habora has two user journeys:
 
 **Public User (boat owner):**  
 Landing page → Map discovery → Chatbot interaction → Berth booking

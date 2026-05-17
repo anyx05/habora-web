@@ -12,16 +12,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'SadamaAgent - Maritime Port Berth Reservations',
+  title: 'Habora - Maritime Port Berth Reservations',
   description: 'Premium maritime port berth reservation system for Estonian harbours. Book your berth with ease.',
   generator: 'v0.app',
   icons: {
-    icon: [
-      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/icon.svg',
   },
 }
 

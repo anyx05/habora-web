@@ -1,4 +1,4 @@
-# SadamaAgent Test Suite
+# Habora Test Suite
 
 This directory contains the automated test suite. Tests are split into fast unit tests (Vitest) and full browser E2E tests (Playwright).
 

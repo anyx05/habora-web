@@ -1,6 +1,6 @@
-# SadamaAgent — Architecture & Contributor Guardrails
+# Habora — Architecture & Contributor Guardrails
 
-> This document defines the hard technical constraints for the SadamaAgent platform. All contributors and AI agents **must read and follow this before making any changes.**
+> This document defines the hard technical constraints for the Habora platform. All contributors and AI agents **must read and follow this before making any changes.**
 
 ---
 

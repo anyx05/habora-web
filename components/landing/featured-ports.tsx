@@ -1,7 +1,5 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Anchor, MapPin, Loader2 } from "lucide-react"
 import { usePublicPortsAndBerths } from "@/lib/queries/public"
 import { MapWrapper } from "./map-wrapper"

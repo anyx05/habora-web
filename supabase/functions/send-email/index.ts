@@ -35,9 +35,9 @@ serve(async (req) => {
       console.log(`Sending confirmation email to ${email} for vessel ${vessel}`);
 
       const { data, error } = await resend.emails.send({
-        from: 'SadamaAgent <onboarding@resend.dev>', // Replace with verified domain in production
+        from: 'Habora <onboarding@resend.dev>', // Replace with verified domain in production
         to: [email],
-        subject: `Booking Confirmed: ${vessel} at SadamaAgent`,
+        subject: `Booking Confirmed: ${vessel} at Habora`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b;">
             <h1 style="color: #06b6d4;">Booking Confirmation</h1>
@@ -54,7 +54,7 @@ serve(async (req) => {
             </div>
             
             <p>We look forward to welcoming you to the marina.</p>
-            <p style="color: #64748b; font-size: 14px; margin-top: 48px;">Safe travels,<br>The SadamaAgent Team</p>
+            <p style="color: #64748b; font-size: 14px; margin-top: 48px;">Safe travels,<br>The Habora Team</p>
           </div>
         `,
       });

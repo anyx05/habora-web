@@ -1,5 +1,5 @@
 -- ╔══════════════════════════════════════════════════════════════════╗
--- ║  SadamaAgent — Seed Data for test@sadama.com                   ║
+-- ║  Habora — Seed Data for test@sadama.com                   ║
 -- ║                                                                 ║
 -- ║  INSTRUCTIONS:                                                  ║
 -- ║  1. Go to Supabase Dashboard → Authentication → Users           ║
