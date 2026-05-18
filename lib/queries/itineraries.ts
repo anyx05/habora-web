@@ -8,6 +8,7 @@ import {
 
 export const itineraryKeys = {
   all: ['itineraries'] as const,
+  list: () => [...itineraryKeys.all, 'list'] as const,
   current: () => [...itineraryKeys.all, 'current'] as const,
   detail: (id: string) => [...itineraryKeys.all, 'detail', id] as const,
 };
@@ -128,6 +129,31 @@ export function useCancelItinerary() {
     onSuccess: (_, itineraryId) => {
       queryClient.invalidateQueries({ queryKey: itineraryKeys.current() });
       queryClient.invalidateQueries({ queryKey: itineraryKeys.detail(itineraryId) });
+      queryClient.invalidateQueries({ queryKey: itineraryKeys.list() });
     },
+  });
+}
+
+export function useUserItineraries() {
+  return useQuery({
+    queryKey: itineraryKeys.list(),
+    queryFn: async () => {
+      try {
+        return await haboraApi.listItineraries();
+      } catch (e) {
+        if (e instanceof HaboraApiError && e.status === 401) {
+          return [];
+        }
+        throw e;
+      }
+    },
+    staleTime: 1000 * 60, // 1 min
+    retry: (failureCount, error) => {
+      if (error instanceof HaboraApiError && (error.status === 401 || error.status === 404)) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+    refetchOnWindowFocus: false,
   });
 }

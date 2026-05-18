@@ -81,3 +81,44 @@ export function usePublicPortsAndBerths() {
     },
   });
 }
+
+/**
+ * Get a single port by ID with its active berths.
+ */
+export function usePortById(portId: string | undefined) {
+  return useQuery({
+    queryKey: ['public-port', portId],
+    enabled: !!portId,
+    staleTime: 60_000,
+    queryFn: async () => {
+      if (!portId) return null;
+      const supabase = createClient();
+
+      const { data: port, error: portError } = await supabase
+        .from('ports')
+        .select('id, name, location, description, contact_email, coordinates')
+        .eq('id', portId)
+        .maybeSingle();
+
+      if (portError) throw new Error(portError.message);
+      if (!port) return null;
+
+      const { data: berths, error: berthsError } = await supabase
+        .from('berths')
+        .select('id, port_id, name, max_length_m, max_draft_m, price_per_night, amenities, status')
+        .eq('port_id', portId)
+        .eq('is_active', true)
+        .order('created_at', { ascending: true });
+
+      if (berthsError) throw new Error(berthsError.message);
+
+      const berthsWithPortContext: PublicBerth[] = (berths ?? []).map((b: any) => ({
+        ...b,
+        port_name: (port as any).name,
+        port_location: (port as any).location,
+      }));
+
+      return { ...(port as any), berths: berthsWithPortContext } as PublicPort;
+    },
+  });
+}

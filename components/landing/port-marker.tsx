@@ -1,11 +1,13 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
+import { useRouter } from "@/i18n/routing"
 import { Marker, Popup } from "react-map-gl/mapbox"
 import { Button } from "@/components/ui/button"
-import { Ship, Navigation, X } from "lucide-react"
+import { Ship, Navigation, X, MapPin } from "lucide-react"
 
 interface PortMarkerProps {
+  id: string
   name: string
   description: string | null
   longitude: number
@@ -13,8 +15,9 @@ interface PortMarkerProps {
   totalBerths: number
 }
 
-export function PortMarker({ name, description, longitude, latitude, totalBerths }: PortMarkerProps) {
+export function PortMarker({ id, name, description, longitude, latitude, totalBerths }: PortMarkerProps) {
   const [showPopup, setShowPopup] = useState(false)
+  const router = useRouter()
   // Track whether pointer is over the marker or the popup card
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -52,6 +55,12 @@ export function PortMarker({ name, description, longitude, latitude, totalBerths
         }
       })
     )
+  }
+
+  const handleViewPort = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    close()
+    router.push(`/ports/${id}` as any)
   }
 
   return (
@@ -127,12 +136,22 @@ export function PortMarker({ name, description, longitude, latitude, totalBerths
               <span>{totalBerths} Berths Total</span>
             </div>
 
-            <Button
-              onClick={handleAskAI}
-              className="w-full bg-cyan/20 hover:bg-cyan/30 text-cyan-light border border-cyan/30 transition-all mt-2"
-            >
-              Ask AI to Book
-            </Button>
+            <div className="flex flex-col gap-2 mt-2">
+              <Button
+                onClick={handleViewPort}
+                className="w-full bg-amber/90 hover:bg-amber text-navy font-semibold transition-all"
+              >
+                <MapPin className="w-4 h-4 mr-1.5" />
+                View Port & Book
+              </Button>
+              <Button
+                onClick={handleAskAI}
+                variant="ghost"
+                className="w-full bg-cyan/20 hover:bg-cyan/30 text-cyan-light border border-cyan/30 transition-all"
+              >
+                Ask AI to Book
+              </Button>
+            </div>
           </div>
         </Popup>
       )}

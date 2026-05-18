@@ -83,6 +83,7 @@ export default function PortsMap({ ports }: PortsMapProps) {
         {validPorts.map((port) => (
           <PortMarker
             key={port.id}
+            id={port.id}
             name={port.name}
             description={port.description}
             longitude={port.coords[0]}

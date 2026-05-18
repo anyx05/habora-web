@@ -1,6 +1,6 @@
 "use client"
 
-import { MessageSquare, Anchor, MailCheck } from "lucide-react"
+import { Map, ListChecks, CheckCircle2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 export function HowItWorks() {
@@ -8,24 +8,24 @@ export function HowItWorks() {
 
   const steps = [
     {
-      icon: Anchor,
+      icon: Map,
       title: t("step1"),
       description: t("step1Desc")
     },
     {
-      icon: MessageSquare,
+      icon: ListChecks,
       title: t("step2"),
       description: t("step2Desc")
     },
     {
-      icon: MailCheck,
+      icon: CheckCircle2,
       title: t("step3"),
       description: t("step3Desc")
     }
   ]
 
   return (
-    <section id="about" className="pt-24 pb-12 bg-background">
+    <section id="how-it-works" className="pt-24 pb-12 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold text-foreground sm:text-4xl">

@@ -181,4 +181,8 @@ export const haboraApi = {
       method: 'POST',
     });
   },
+
+  async listItineraries(): Promise<ItineraryWithBookingsResponse[]> {
+    return fetchApi<ItineraryWithBookingsResponse[]>('/api/v1/itineraries');
+  },
 };

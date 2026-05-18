@@ -81,10 +81,12 @@ export function HeroSection({ onOpenChat }: HeroSectionProps) {
           <Button
             variant="outline"
             size="lg"
-            asChild
+            onClick={() => {
+              document.getElementById('map')?.scrollIntoView({ behavior: 'smooth' });
+            }}
             className="w-full sm:w-auto border-white/20 bg-white/[0.05] text-white hover:bg-white/10 hover:border-white/30 hover:text-white px-6 sm:px-8 h-12 sm:h-14 text-sm sm:text-base transition-all duration-300 ease-out hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
           >
-            <a href="#berths">{t('browseBtn')}</a>
+            {t('browseBtn')}
           </Button>
         </div>
 
