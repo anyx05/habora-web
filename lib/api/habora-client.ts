@@ -1,6 +1,14 @@
 import { createClient } from '@/lib/supabase/client';
 
-const HABORA_API_URL = process.env.NEXT_PUBLIC_HABORA_API_URL || 'http://localhost:8080';
+const BASE_URL = process.env.NEXT_PUBLIC_HABORA_API_URL ?? 'http://localhost:8080';
+
+// Warn the developer when running against localhost so a missing env var
+// is immediately visible in the browser console.
+if (typeof window !== 'undefined' && BASE_URL.includes('localhost')) {
+  console.warn(
+    '[habora-client] Using localhost API. Set NEXT_PUBLIC_HABORA_API_URL for production.',
+  );
+}
 
 export async function getSupabaseAccessToken(): Promise<string> {
   const supabase = createClient();
@@ -97,14 +105,16 @@ export interface AddBookingToItineraryRequest {
 
 async function fetchApi<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = await getSupabaseAccessToken();
-  
+
   const headers = new Headers(options.headers);
   headers.set('Authorization', `Bearer ${token}`);
   if (!headers.has('Content-Type') && options.body) {
     headers.set('Content-Type', 'application/json');
   }
+  // Bypass the ngrok free-tier browser-warning interstitial (harmless on non-ngrok backends).
+  headers.set('ngrok-skip-browser-warning', 'true');
 
-  const response = await fetch(`${HABORA_API_URL}${path}`, {
+  const response = await fetch(`${BASE_URL}${path}`, {
     ...options,
     headers,
   });

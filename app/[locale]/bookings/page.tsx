@@ -6,9 +6,9 @@ import { Header } from "@/components/landing/header"
 import { TripDrawer } from "@/components/landing/TripDrawer"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Anchor, MapPin, Calendar } from "lucide-react"
+import { Anchor, MapPin, Calendar, RefreshCw } from "lucide-react"
 import { useUserItineraries } from "@/lib/queries/itineraries"
-import type { ItineraryWithBookingsResponse } from "@/lib/api/habora-client"
+import { HaboraApiError, type ItineraryWithBookingsResponse } from "@/lib/api/habora-client"
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -170,7 +170,7 @@ function TripList({
 
 export default function MyTripsPage() {
   const t = useTranslations("MyTrips")
-  const { data, isLoading, error } = useUserItineraries()
+  const { data, isLoading, error, refetch } = useUserItineraries()
 
   const { upcoming, past, cancelled } = useMemo(() => {
     const all = data ?? []
@@ -194,12 +194,24 @@ export default function MyTripsPage() {
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-36 w-full rounded-2xl" />
+              <Skeleton key={i} className="h-36 w-full rounded-2xl bg-slate-800/40" />
             ))}
           </div>
         ) : error ? (
-          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center">
-            <p className="text-sm text-destructive">{t("error")}</p>
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center space-y-2">
+            <p className="text-sm font-medium text-destructive">{t("error")}</p>
+            <p className="text-xs text-muted-foreground">
+              {error instanceof HaboraApiError
+                ? `${error.status}: ${error.message}`
+                : "Network error — check your connection or the API URL."}
+            </p>
+            <button
+              onClick={() => refetch()}
+              className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Try again
+            </button>
           </div>
         ) : (
           <Tabs defaultValue="upcoming">

@@ -12,6 +12,7 @@ import type { AuthChangeEvent, Session } from "@supabase/supabase-js"
 import { Link } from "@/i18n/routing"
 import { useQueryClient } from "@tanstack/react-query"
 import { itineraryKeys } from "@/lib/queries/itineraries"
+import ReactMarkdown from "react-markdown"
 
 interface ChatWidgetProps {
   isOpen: boolean
@@ -303,13 +304,32 @@ export function ChatWidget({ isOpen, onToggle }: ChatWidgetProps) {
                     </div>
                     <div
                       className={cn(
-                        "max-w-[80%] rounded-2xl px-4 py-3 text-sm whitespace-pre-line",
+                        "max-w-[80%] rounded-2xl px-4 py-3 text-sm",
                         msg.role === "assistant"
                           ? "bg-white/[0.05] text-white/90 rounded-tl-sm border border-white/10"
-                          : "bg-cyan text-navy font-medium rounded-tr-sm"
+                          : "bg-cyan text-navy font-medium rounded-tr-sm whitespace-pre-line"
                       )}
                     >
-                      {msg.content}
+                      {msg.role === "assistant" ? (
+                        // Render markdown for AI responses — prevents raw asterisks showing
+                        <ReactMarkdown
+                          components={{
+                            p: ({ children }) => <p className="m-0 leading-relaxed">{children}</p>,
+                            ul: ({ children }) => <ul className="m-0 mt-1 pl-4 list-disc space-y-0.5">{children}</ul>,
+                            ol: ({ children }) => <ol className="m-0 mt-1 pl-4 list-decimal space-y-0.5">{children}</ol>,
+                            li: ({ children }) => <li className="m-0">{children}</li>,
+                            strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+                            em: ({ children }) => <em className="italic text-white/80">{children}</em>,
+                            // Collapse extra spacing between blocks
+                            br: () => <br className="my-0.5" />,
+                          }}
+                        >
+                          {msg.content}
+                        </ReactMarkdown>
+                      ) : (
+                        // User messages: plain text only (prevents markdown injection)
+                        msg.content
+                      )}
                       {msg.components && msg.components.length > 0 && (
                         <div className="mt-3 flex flex-col gap-2">
                           {msg.components.map((comp: any, i: number) => {

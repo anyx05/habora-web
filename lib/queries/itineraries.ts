@@ -137,18 +137,10 @@ export function useCancelItinerary() {
 export function useUserItineraries() {
   return useQuery({
     queryKey: itineraryKeys.list(),
-    queryFn: async () => {
-      try {
-        return await haboraApi.listItineraries();
-      } catch (e) {
-        if (e instanceof HaboraApiError && e.status === 401) {
-          return [];
-        }
-        throw e;
-      }
-    },
+    queryFn: () => haboraApi.listItineraries(),
     staleTime: 1000 * 60, // 1 min
     retry: (failureCount, error) => {
+      // Never retry auth or not-found errors — they won't resolve by retrying
       if (error instanceof HaboraApiError && (error.status === 401 || error.status === 404)) {
         return false;
       }
